@@ -47,6 +47,7 @@ public class Gameplay : MonoBehaviour
 
     void Start()
     {
+        PlayerPrefs.SetInt("score", 0);
         timer = PlayerPrefs.GetInt("time", 30);
         InitCategories();
         NextQuestion();
@@ -96,6 +97,7 @@ public class Gameplay : MonoBehaviour
         {
             GameObject.Find("correct").GetComponent<AudioSource>().Play();
         }
+        scoretext.text = PlayerPrefs.GetInt("score", 0).ToString();
         winSprite.SetActive(true);
         Invoke(nameof(NextQuestion), 0.5f);
     }
@@ -103,9 +105,10 @@ public class Gameplay : MonoBehaviour
     void FailSpeed()
     {
         int score = PlayerPrefs.GetInt("score", 0);
-
-        PlayerPrefs.SetInt("score", score - 5);
-
+        if (PlayerPrefs.GetInt("score", 0) > 0)
+        {
+            PlayerPrefs.SetInt("score", score - 5);
+        }
         if (PlayerPrefs.GetInt("sound") == 1)
         {
             GameObject.Find("error").GetComponent<AudioSource>().Play();
@@ -228,7 +231,7 @@ public class Gameplay : MonoBehaviour
     {
         movementPanel.SetActive(true);
 
-        // примеры заданий
+        // РїСЂРёРјРµСЂС‹ Р·Р°РґР°РЅРёР№
         if (Random.Range(0, 2) == 0)
         {
             targetClicks = 2;
@@ -269,15 +272,16 @@ public class Gameplay : MonoBehaviour
         else
         {
             int score = PlayerPrefs.GetInt("score", 0);
-            PlayerPrefs.SetInt("score", score - 5);
-            if (PlayerPrefs.GetInt("bestscore") < PlayerPrefs.GetInt("score"))
+            if (score > 0)
             {
-                PlayerPrefs.SetInt("bestscore", score - 5);
+                PlayerPrefs.SetInt("score", score - 5);
             }
+
             if (PlayerPrefs.GetInt("sound") == 1)
             {
                 GameObject.Find("error").GetComponent<AudioSource>().Play();
             }
+            scoretext.text = PlayerPrefs.GetInt("score", 0).ToString();
             errorSprite.SetActive(true);
         }
 
@@ -288,7 +292,7 @@ public class Gameplay : MonoBehaviour
     {
         timeupmenu.SetActive(true);
         gameplaymenu.SetActive(false);
-        Time.timeScale = 0;
+
        
     }
 }
